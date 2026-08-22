@@ -1,6 +1,6 @@
 # Документация базы данных фитнес-клуба
 
-Проект архитектуры БД для управления клиентами, тренерами, типами тренировок, абонементами и записями на занятия.
+Проект архитектуры БД для управления клиентами, тренерами, тренировками (групповыми и индивидуальными) и записями клиентов на занятия.
 
 ---
 
@@ -30,42 +30,27 @@
 * phone (VARCHAR(20)) — NOT NULL, UNIQUE
 * email (VARCHAR(100))
 
-### 3. Типы тренировок (training_type)
+### 3. Тренировки (training)
 * id (SERIAL) — PRIMARY KEY
-* training_name (VARCHAR(100)) — NOT NULL, UNIQUE
+* training_name (VARCHAR(100)) — NOT NULL
+* start_time (TIMESTAMP) — NOT NULL
+* is_group (BOOLEAN) — NOT NULL, DEFAULT TRUE
 * max_capacity (INTEGER) — CHECK (max_capacity > 0)
 * instructor_id (INTEGER) — FOREIGN KEY -> instructor(id) (ON DELETE SET NULL)
 
-### 4. Типы абонементов (ticket_type)
-* id (SERIAL) — PRIMARY KEY
-* type_name (VARCHAR(100)) — NOT NULL, UNIQUE
-* duration_days (INTEGER) — NOT NULL, CHECK (duration_days > 0)
-
-### 5. Абонементы (season_ticket)
+### 4. Запись на тренировки (client_training) — Таблица-мост (M:M)
 * id (SERIAL) — PRIMARY KEY
 * client_id (INTEGER) — NOT NULL, FOREIGN KEY -> client(id) (ON DELETE CASCADE)
-* ticket_type_id (INTEGER) — NOT NULL, FOREIGN KEY -> ticket_type(id) (ON DELETE RESTRICT)
-* training_type_id (INTEGER) — NOT NULL, FOREIGN KEY -> training_type(id) (ON DELETE RESTRICT)
-* purchase_date (DATE) — NOT NULL, DEFAULT CURRENT_DATE
-* end_date (DATE) — NOT NULL
-* Constraint: CHECK (end_date >= purchase_date)
-
-### 6. Запись на тренировки (client_training) — Таблица-мост (M:M)
-* client_id (INTEGER) — FOREIGN KEY -> client(id) (ON DELETE CASCADE)
-* training_type_id (INTEGER) — FOREIGN KEY -> training_type(id) (ON DELETE CASCADE)
-* Constraint: PRIMARY KEY (client_id, training_type_id)
+* training_id (INTEGER) — NOT NULL, FOREIGN KEY -> training(id) (ON DELETE CASCADE)
 
 ---
 
 ## Взаимосвязи
 
-1. instructor -> training_type (1:M): Один тренер может вести много типов тренировок.
-2. client -> client_training (1:M): Один клиент может иметь много записей на тренировки.
-3. training_type -> client_training (1:M): На один тип тренировки может записаться много клиентов.  
-   (Пункты 2 и 3 образуют связь Многие-ко-Многим между клиентами и тренировками).
-4. client -> season_ticket (1:M): Один клиент может купить несколько абонементов.
-5. ticket_type -> season_ticket (1:M): Один тариф может использоваться во множестве абонементов.
-6. training_type -> season_ticket (1:M): Одно направление тренировок может указываться во множестве абонементов.
+1. instructor -> training (1:M): Один тренер может вести множество тренировок в расписании.
+2. client -> client_training (1:M): Один клиент может быть записан на множество тренировок.
+3. training -> client_training (1:M): На одну тренировку может быть записано множество клиентов.  
+   (Пункты 2 и 3 образуют связь Многие-ко-Многим между клиентами и конкретными тренировками).
 
 ---
 
@@ -88,31 +73,17 @@ CREATE TABLE instructor (
     email VARCHAR(100)
 );
 
-CREATE TABLE training_type (
+CREATE TABLE training (
     id SERIAL PRIMARY KEY,
-    training_name VARCHAR(100) NOT NULL UNIQUE,
+    training_name VARCHAR(100) NOT NULL,
+    start_time TIMESTAMP NOT NULL,
+    is_group BOOLEAN NOT NULL DEFAULT TRUE,
     max_capacity INTEGER CHECK (max_capacity > 0),
     instructor_id INTEGER REFERENCES instructor(id) ON DELETE SET NULL
 );
 
-CREATE TABLE ticket_type (
-    id SERIAL PRIMARY KEY,
-    type_name VARCHAR(100) NOT NULL UNIQUE,
-    duration_days INTEGER NOT NULL CHECK (duration_days > 0)
-);
-
-CREATE TABLE season_ticket (
-    id SERIAL PRIMARY KEY,
-    client_id INTEGER NOT NULL REFERENCES client(id) ON DELETE CASCADE,
-    ticket_type_id INTEGER NOT NULL REFERENCES ticket_type(id) ON DELETE RESTRICT,
-    training_type_id INTEGER NOT NULL REFERENCES training_type(id) ON DELETE RESTRICT,
-    purchase_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    end_date DATE NOT NULL,
-    CONSTRAINT chk_season_ticket_dates CHECK (end_date >= purchase_date)
-);
-
 CREATE TABLE client_training (
+    id SERIAL PRIMARY KEY,
     client_id INTEGER NOT NULL REFERENCES client(id) ON DELETE CASCADE,
-    training_type_id INTEGER NOT NULL REFERENCES training_type(id) ON DELETE CASCADE,
-    PRIMARY KEY (client_id, training_type_id)
+    training_id INTEGER NOT NULL REFERENCES training(id) ON DELETE CASCADE
 );
