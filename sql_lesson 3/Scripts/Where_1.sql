@@ -1,7 +1,7 @@
 select
-	first_name,
-	last_name,
-	age,
-	country
+    first_name,
+    last_name,
+    age,
+    country
 from customers
-where age > 25;
+where age > 25 and country = 'USA';
