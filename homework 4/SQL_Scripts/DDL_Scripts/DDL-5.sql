@@ -1,0 +1,1 @@
+alter table departments  rename column location to office_location;
