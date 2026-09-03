@@ -14,3 +14,9 @@ raw_transactions = ["SUCCESS:100", "FAILED:50", "SUCCESS:-10",
 
 raw_transactions_clear =list(int (elem[8:len(elem)]) for elem in raw_transactions if elem.startswith("SUCCESS:") and int(elem[8:len(elem)])>0)
 print(f"Очищенные транзакции: {raw_transactions_clear}")
+
+#вариант 2
+# raw_transactions_clear = int(amount) for status, amount in (tx.split(":") for tx in raw_transactions)
+#     if status == "SUCCESS" and int(amount) > 0
+
+#

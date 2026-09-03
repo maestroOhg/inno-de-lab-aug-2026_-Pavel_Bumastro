@@ -18,7 +18,12 @@ required_admin_roles = {"admin", "security_officer",
 "audit_manager"}
 
 set_requested_roles = set(requested_roles)
+print(f"Уникальные запрошенные роли: {set_requested_roles}")
 
-print(set(required_admin_roles & set_requested_roles))
+print(f"Общие административные роли: {set(required_admin_roles & set_requested_roles)}")
 
-print(set(required_admin_roles - set_requested_roles))
+print(f"Недостающие административные роли: {set(required_admin_roles - set_requested_roles)}")
+
+print(f"Наличие роли  security_officer в запросе: {'security_officer' in set_requested_roles}") #Для старых версий python лучше одиночные кавычки(узнал)
+
+#

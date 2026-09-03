@@ -30,3 +30,5 @@ raw_user_record_list[3] = raw_user_record_list[3].lower()
 
 result = "|".join(raw_user_record_list)
 print(result)
+
+#
