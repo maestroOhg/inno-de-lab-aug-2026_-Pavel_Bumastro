@@ -2,29 +2,28 @@
 MAX_RENTAL_BATCH_LIMIT = 150.0
 
 #Задание 1
-def  calculate_rental_batch(quantity : int, rental_rate :float , discount : float=0.0) -> tuple[float, bool] :
+def calculate_rental_batch(quantity: int, rental_rate: float , discount: float = 0.0) -> tuple[float, bool] :
     """
     Функция для расчета стоимости партии дисков
     с учетом жанровой скидки
 
     Args:
-            quantity(int) - количество дисков
-            rental_rate(float) - арендная ставка
-            discount(float) - процент скидки
+            quantity(int): Количество дисков
+            rental_rate(float): Арендная ставка
+            discount(float): Процент скидки
 
     Returns:
-        tuple[float, bool] - Кортеж из двух элементов:
-        final_sum (float): Итоговая стоимость.
+        tuple[float, bool]: Кортеж из двух элементов:
+        final_sum (float): Итоговая стоимость
         is_limit_exceeded (bool): Флаг превышения лимита
     """
-    final_sum: float =  round(quantity * rental_rate * (1 -
-    discount),2)
-    is_limit_exceeded : bool = final_sum > MAX_RENTAL_BATCH_LIMIT
+    final_sum: float =  round(quantity * rental_rate * (1 - discount),2)
+    is_limit_exceeded: bool = final_sum > MAX_RENTAL_BATCH_LIMIT
     return (final_sum, is_limit_exceeded)
 
 
 #Функция для удобного вывода
-def create_report (name_batch : str, quantity : int, rental_rate : float, discount :float=0.0) :
+def create_report(name_batch: str, quantity: int, rental_rate: float, discount: float = 0.0) :
     calc_batch = calculate_rental_batch(quantity ,rental_rate,discount)
 
     print(f"""

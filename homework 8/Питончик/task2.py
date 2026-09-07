@@ -1,5 +1,4 @@
-from typing import Callable
-from typing import Any
+from typing import Callable,Any
 import time
 
 #Константы
@@ -7,38 +6,38 @@ PERFORMANCE_LOG_PREFIX = "[PERF_LOG]"
 TIME_DECIMALS = 8
 
 # Задание 2
-def performance_logger(func : Callable[...,Any]) -> Callable[...,Any]:
+def performance_logger(func: Callable[...,Any]) -> Callable[...,Any]:
     """
     Декоратор для замера время выполнения функции и вывода лога
 
     Args:
-        func : Callable[...,Any] - принимает функцию с любыми параметрами
+        func : Callable[...,Any]: Принимает функцию с любыми параметрами
 
     Returns:
-        Callable - возвращает функцию
+        Callable: Возвращает функцию
     """
-    def wrapper(*args :Any, **kwargs : Any) -> Any:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
 
         start_time = time.perf_counter()
         sorted_report = func(*args, **kwargs)
         end_time = time.perf_counter()
-        print(f"{PERFORMANCE_LOG_PREFIX} Функция '{func.__name__}' выполнена за { (end_time-start_time):.{TIME_DECIMALS}f} сек.")
+        print(f"{PERFORMANCE_LOG_PREFIX} Функция '{func.__name__}' выполнена за {(end_time-start_time):.{TIME_DECIMALS}f} сек.")
         return sorted_report
     return wrapper
 
 
 @performance_logger
-def get_sorted_report(sales : list[dict[str, str | float]]) -> list[dict[str, str | float]] :
+def get_sorted_report(sales: list[dict[str, str | float]]) -> list[dict[str, str | float]] :
     """
     Функция сортирует список категорий по total_sales в порядке убывания
 
     Args:
-        sales - список словарей с данными: категория, выручка
+        sales: Cписок словарей с данными: категория, выручка
 
     Returns:
-        list[dict[str, str | float]] - отсортированный список
+        list[dict[str, str | float]]: Отсортированный список
     """
-    return sorted(sales, key = lambda item: item['total_sales'], reverse=True)
+    return sorted(sales, key=lambda item: item['total_sales'], reverse=True)
 
 
 #Тесты
