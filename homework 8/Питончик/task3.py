@@ -3,7 +3,7 @@ from typing import Any
 #Константы
 DEFAULT_RETURN_INDEX_BASE = 10.0
 
-def calculate_overdue_fine(name_film,days_overdue,fine_rate: Any) -> tuple[float, float] | None :
+def calculate_overdue_fine(name_film: Any, days_overdue: Any, fine_rate: Any) -> tuple[float, float] | None :
     """
     Отказоустойчивая функция для расчета штрафа и технического индекса оборачиваемости.
 
